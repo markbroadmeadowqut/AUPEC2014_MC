@@ -41,8 +41,6 @@
 % The latest version can be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/contrib/cite/
 % The documentation is contained in the cite.sty file itself.
-
-% MAHB - compiles OK on laptop but not on work system
 \usepackage{mathptmx,graphicx}
 \DeclareGraphicsExtensions{.pdf,.png}
 
@@ -280,7 +278,7 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Michael T. Carpenter and Mark A. H. Broadmeadow}
+\author{\IEEEauthorblockN{Michael Carpenter and Mark A. H. Broadmeadow}
 \IEEEauthorblockA{School of Electrical Engineering and Computer Science\\
 Queensland University of Technology\\
 Brisbane, Australia\\
@@ -304,23 +302,61 @@ Email: michael.carpenter@student.qut.edu.au}}
 
 \begin{abstract}
 %\boldmath
-Abstract goes here.
+Energy monitoring and power quality analysis has, and always will be, a necessity in industrial and commercial situations....
 \end{abstract}
 
-% no keywords
 
 \IEEEpeerreviewmaketitle
 
 \section{Introduction}
 
-An introduction with some references to \cite{Broadmeadow2014} and \cite{Broadmeadow2014-2}.
+Currently, industrial energy users are limited to the use of generally expensive and low-bandwidth energy usage data collection devices. Although such metering devices are well suited to high-accuracy, high-energy systems, they are poorly suited to highly modular, multi-sensor data collection schemes.  To facillitate industrial process refinement, fault detection and energy usage analysis, the Queensland University of Technology researchers are currently developing a galvanically isolated, low-cost, high-bandwidth data acquisition module. 
 
-\section{Proposed isolated ADC}
-%MAHB: This section should be reworded: clumsy
+The complete system (figure) comprises of one or more data aquisition modules (herin referred to as DAQMs), a data consollodation FPGA, and a microcontroller attached to a PC, display or storage device.  
+The DAQM's data conversion device is commerical dual-input sigma-delta IC, with approriate signal conditioning to facillitate voltage measurement via a resistor divider, and current measurement via a resistive shunt or current transformer (CT).  This paper will refer to the data conversion side of the DAQM as the "secondary" side.  To power the sigma-delta converter and to transmit data from it to the host, as well as simultaneously providing the converter with a clock signal from the host, a single planar coreless PCB transformer is used.  For current sigma-delta converter, the clock is approximately 8MHz, with the data rate of $ f_{clock}/4 $ (voltage and current share one data stream) with the maximum input sampling rate of $ f_{clock}/12 $.
+This transformer, along with the methods used to transfer power, clock and data signals, will be the focus of this paper.  The secondary side of the DAQM consists of the coreless transformer driver, clock encoding and data recovery circuitry.  
 
-\section{Coreless PCB transformers}
+Planar coreless PCB transformers are not a new concept, and considerable work has been presented by Hui, et al \cite{TangHuiFundamental}.  Such papers are primarily focussed on the application of coreless PCB transformers in relatively low-frequency isolated gate drive circuits, and do not discuss high-frequency signal transfer nor bidirectional (clock and data) signal transfer whilst simultaneously extracting power from the PCB transformer's secondary planar winding.
 
-\section{Topology and operating principles}
+
+\section{Planar Coreless PCB Transformers}
+
+The fundamental design of a planar coreless PCB transformer involves two planar copper spirals - one ethched onto either side of a regular two-layer PCB.  The two windings are thus separated by the PCB's core material, whose material properties and thickness determine, to some extent, the transformer's performance and primary-to-secondary isolation.  This transformer's primary winding is then driven at high frequency, usually in the range of 2MHz to 20MHz in order to achieve either the maximum [input] impednace frequency (MIF - useful in low power systems) or the maximum efficiency frequency (MEF - useful for high power systems).  Hui, et al [ref] have demonstrated that an external secondary load capacitor, in the order of 100pF to 1nF, plays a significant role in the determination of the transformer's resonant frequency.  In conventional coreless PCB transformer applications, the output (ie: secondary winding) voltage is then recified and filtered.  Transformer efficiencies exceeding 90\%, with power density of up to $ 24W/cm^{2} $ have been demonstrated \cite{TangHuiFundamental}.
+
+Planar coreless PCB transformers are very low cost and feature high power densities, no manufacturing restrictions due to core size or shape and are constructed using highly repeatable standard PCB manufacturing process. 
+
+A two-winding coreless PCB transformer may be described using the high-frequency transformer model in FIGURE, where [LIST OF PARAMETERS].
+The self inductance of the planar widning is given by
+% PRI
+\begin{equation}
+	L_{p} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{p}}{M_{ij}}}
+\end{equation}
+%
+% SEC
+\begin{equation}
+	L_{s} = \sum\limits_{j=1}^{N_{s}}{\sum\limits_{i=1}^{N_{s}}{M_{ij}}}
+\end{equation}
+
+And thus, the mutual inductance between the two planar windings may be represented as
+%
+\begin{equation}
+	M_{ps} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{s}}{M_{ij}}}
+\end{equation}
+
+where the mutual inductance, $ M_{ij} $, has been reported by Hurley and Duffy \cite{HurleyDuffy}
+%
+\begin{equation}
+	M_{ij} = \frac{\mu_{0}\pi}{h_{1}\ln(\frac{r_{2}}{r_{1}})h_{2}\ln(\frac{a_{2}}{a_{1}})}\int\limits_{0}^{\inf}{S(kr_{2},kr_{1})S(ka_{2},ka_{1})Q(kh_{1},kh_{2})\exp^{-k\mod{z}}dk}
+\end{equation}
+
+where
+\begin{equation}
+	S(kr_{2},kr_{1}) = \frac{J_{0}(kr_{2})-J_{0}(kr_{1})}{k}
+\end{equation}
+%
+\begin{equation}
+	S(ka_{2},ka_{1}) = \frac{J_{0}(ka_{2})-J_{0}(ka_{1})}{k}
+\end{equation}
 
 \section{Images}
 
