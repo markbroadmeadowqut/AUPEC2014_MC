@@ -346,7 +346,7 @@ And thus, the mutual inductance between the two planar windings may be represent
 where the mutual inductance, $ M_{ij} $, has been reported by Hurley and Duffy \cite{HurleyDuffy}
 %
 \begin{equation}
-	M_{ij} = \frac{\mu_{0}\pi}{h_{1}\ln(\frac{r_{2}}{r_{1}})h_{2}\ln(\frac{a_{2}}{a_{1}})}\int\limits_{0}^{\inf}{S(kr_{2},kr_{1})S(ka_{2},ka_{1})Q(kh_{1},kh_{2})\exp^{-k\mod{z}}dk}
+	M_{ij} = \frac{\mu_{0}\pi}{h_{1}\ln(\frac{r_{2}}{r_{1}})h_{2}\ln(\frac{a_{2}}{a_{1}})}\int\limits_{0}^{\infty}{S(kr_{2},kr_{1})S(ka_{2},ka_{1})Q(kh_{1},kh_{2})\exp^{-k \mod{z}}dk}
 \end{equation}
 
 where
@@ -358,11 +358,25 @@ where
 	S(ka_{2},ka_{1}) = \frac{J_{0}(ka_{2})-J_{0}(ka_{1})}{k}
 \end{equation}
 
-\section{Images}
+% Power, Clock, Data
+\section{Topology}
+
+	\subsection{Power}
+	The most basic ues for a planar coreless PCB transformer is in an isolated power transfer application.  Typically, this would be achieved by driving the transformer at its maximum efficiency frequency (MIF) for high power transfer applications, or, where it is desirable to minimse the quiescent power consumption of the transformer, the maximum impedance frequency (MIF).  The MEF will tend to approach the MIF as the transformer's secondary load current decreases \cite{TangHuiFundamental}.  
+	Due to the low secondary load current of the DAQM (approximately 20mW at 3.3V) the MEF of the module's coreless PCB transformer is assumed to be equal to the MIF.  In most papers discussing planar coreless PCB transformers, the primary winding is driven in either a single-ended or bipolar manner [FIGURE] with a relatively high supply voltage (12V being a popular choice for isolated gate drive circuits).  Since the DAQM is to be a 3.3V supply capable device, the PCB transformer is driven in a bipolar manner to achieve an effective doubling of the primary drive voltage.  The primary drive circuit uses a simple relaxation oscillator for the resonant frequency generation, and the transformer's winding is driven directly by the schmitt-trigger's high-current ($ \pm $32mA) push-pull outputs [FIGURE].
+	On the transformer's secondary side, the output waveform may simply be rectified using an ordinary voltage-doubler rectifier topology [FIGURE].  The figure shows the use of schottky diodes to minimise voltage loss, however, the effect of the diode's junction capacitance on the transformer's resonant frequency should not be neglected.
+	
+	\subsection{Clock Generation and Recovery} % Using method: gating of drive signal (could also be: divide drive signal by two; OR: Amplitude modulation)
+	In order to provide a clock signal of approximately 8MHz to the frontend ADC, a method of transferring this clock signal via the PCB transformer from the DAQM's primary side to the secondary side (where the sigma-delta data converter resides) was required.  Due to the minimal secondary power required by the DAQM's frontend, the sigma-delta ADC's clock signal may be encoded simply by gating the transformer's primary drive current.  Although the DAQM's clock signal is at a much higher frequency than the signals used in isolated gate drive systmes, the modulation principle is similar \cite{TangHuiFundamental}.  [FIGURE] shows a standard silicon diode used to gate the relaxation oscillator such that an external clock signal of arbitarary timing may 100\% amplitude-modulate the transformer's primary drive current.
+	To recover the clock signal, the transformer's secondary output is essentially low-pass filtered with a cutoff frequency approximately equal to the [SOMETHING].  [FIGURE] shows the decoding circuit, using a Schmitt trigger inverter (with feedback) to bias the filtered signal and provide clean clock transistions for the data converter's clock input.  In applications requiring greater secondary output power, a modulation depth of less than 100\% could be achieved using a transistor and parallel resistor in the primary winding's current path, athough it can be expected that will require a more complex clock recovery filter.
+	
+	\subsection{Data Recovery}
+	The sigma-delta data converter outputs both voltage and current infomration on a single manchester-encoded bitstream at a rate equal to $ f_{clock}/4 $ (typically 2MHz).  To transfer this data from the transformer's secondary side back to the primary, it is necessary to effect the transformer in some way so that the disturbance is detectable at the primary.  Such disturbance detection is performed in commercial RFID systems, where the receiver modulates its antenna's resonant frequency to allow the transmitter to identify the recieving device \cite{RFID}.
+
 
 Images can be inserted as shown below. We can reference figure \ref{fig:resistor_equivalent_circuit} like so. Use a starred figure environment for double column floats (see fig. \ref{fig:ClockGen}).
 
-\begin{figure}[t] 
+\begin{figure}[t]
 	\centering
 	\includegraphics[width=0.8\columnwidth]{./img/resistor_equivalent_circuit}
 	\caption{Lumped circuit model of a non-ideal resistor.}
