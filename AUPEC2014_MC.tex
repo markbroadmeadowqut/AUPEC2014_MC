@@ -310,23 +310,44 @@ Energy monitoring and power quality analysis has, and always will be, a necessit
 
 \section{Introduction}
 
-Currently, industrial energy users are limited to the use of generally expensive and low-bandwidth energy usage data collection devices. Although such metering devices are well suited to high-accuracy, high-energy systems, they are poorly suited to highly modular, multi-sensor data collection schemes.  To facillitate industrial process refinement, fault detection and energy usage analysis, the Queensland University of Technology researchers are currently developing a galvanically isolated, low-cost, high-bandwidth data acquisition module. 
+Currently, industrial energy users are limited to the use of generally expensive and low-bandwidth energy usage data collection devices. Although such metering devices are well suited to high-accuracy, high-energy systems, they are poorly suited to highly modular, multi-sensor data collection schemes.  To facilitate industrial process refinement, fault detection and energy usage analysis, the Queensland University of Technology researchers are currently developing a galvanically isolated, low-cost, high-bandwidth data acquisition module. 
 
-The complete system (figure) comprises of one or more data aquisition modules (herin referred to as DAQMs), a data consollodation FPGA, and a microcontroller attached to a PC, display or storage device.  
-The DAQM's data conversion device is commerical dual-input sigma-delta IC, with approriate signal conditioning to facillitate voltage measurement via a resistor divider, and current measurement via a resistive shunt or current transformer (CT).  This paper will refer to the data conversion side of the DAQM as the "secondary" side.  To power the sigma-delta converter and to transmit data from it to the host, as well as simultaneously providing the converter with a clock signal from the host, a single planar coreless PCB transformer is used.  For current sigma-delta converter, the clock is approximately 8MHz, with the data rate of $ f_{clock}/4 $ (voltage and current share one data stream) with the maximum input sampling rate of $ f_{clock}/12 $.
+The complete system (\figurename{1}) comprises of one or more data acquisition modules (herein referred to as DAQMs), a data consolidation FPGA, and a microcontroller attached to a PC, display or storage device.  
+The DAQM's data conversion device is commercial dual-input sigma-delta IC, with appropriate signal conditioning to facilitate voltage measurement via a resistor divider, and current measurement via a resistive shunt or current transformer (CT).  This paper will refer to the data conversion side of the DAQM as the "secondary" side.  To power the sigma-delta converter and to transmit data from it to the host, as well as simultaneously providing the converter with a clock signal from the host, a single planar coreless PCB transformer is used.  For current sigma-delta converter, the clock is approximately 8MHz, with the data rate of $ f_{clock}/4 $ (voltage and current share one data stream) with the maximum input sampling rate of $ f_{clock}/12 $.
 This transformer, along with the methods used to transfer power, clock and data signals, will be the focus of this paper.  The secondary side of the DAQM consists of the coreless transformer driver, clock encoding and data recovery circuitry.  
 
 Planar coreless PCB transformers are not a new concept, and considerable work has been presented by Hui, et al \cite{TangHuiFundamental}.  Such papers are primarily focussed on the application of coreless PCB transformers in relatively low-frequency isolated gate drive circuits, and do not discuss high-frequency signal transfer nor bidirectional (clock and data) signal transfer whilst simultaneously extracting power from the PCB transformer's secondary planar winding.
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1\columnwidth]{./img/FullSystem_BasicCol}
+	\caption{Modular isolated power measurement system.}
+	\label{fig:FullSystem}
+\end{figure}
+
 
 \section{Planar Coreless PCB Transformers}
 
-The fundamental design of a planar coreless PCB transformer involves two planar copper spirals - one ethched onto either side of a regular two-layer PCB.  The two windings are thus separated by the PCB's core material, whose material properties and thickness determine, to some extent, the transformer's performance and primary-to-secondary isolation.  This transformer's primary winding is then driven at high frequency, usually in the range of 2MHz to 20MHz in order to achieve either the maximum [input] impednace frequency (MIF - useful in low power systems) or the maximum efficiency frequency (MEF - useful for high power systems).  Hui, et al [ref] have demonstrated that an external secondary load capacitor, in the order of 100pF to 1nF, plays a significant role in the determination of the transformer's resonant frequency.  In conventional coreless PCB transformer applications, the output (ie: secondary winding) voltage is then recified and filtered.  Transformer efficiencies exceeding 90\%, with power density of up to $ 24W/cm^{2} $ have been demonstrated \cite{TangHuiFundamental}.
+The fundamental design of a planar coreless PCB transformer involves two planar copper spirals - one etched onto either side of a regular two-layer PCB.  The two windings are thus separated by the PCB's core material, whose material properties and thickness determine, to some extent, the transformer's performance and primary-to-secondary isolation.  This transformer's primary winding is then driven at high frequency, usually in the range of 2MHz to 20MHz in order to achieve either the maximum [input] impedance frequency (MIF - useful in low power systems) or the maximum efficiency frequency (MEF - useful for high power systems).  Hui, et al \cite{TangHuiFundamental} have demonstrated that an external secondary load capacitor, in the order of 100pF to 1nF, plays a significant role in the determination of the transformer's resonant frequency.  In conventional coreless PCB transformer applications, the output (ie: secondary winding) voltage is then rectified and filtered.  Transformer efficiencies exceeding 90\%, with power density of up to $ 24W/cm^{2} $ have been demonstrated \cite{TangHuiFundamental}.
 
 Planar coreless PCB transformers are very low cost and feature high power densities, no manufacturing restrictions due to core size or shape and are constructed using highly repeatable standard PCB manufacturing process. 
 
-A two-winding coreless PCB transformer may be described using the high-frequency transformer model in FIGURE, where [LIST OF PARAMETERS].
-The self inductance of the planar widning is given by
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1\columnwidth]{./img/HF_Model}
+	\caption{High-frequency transformer model \cite{TangHuiFundamental}.}
+	\label{fig:HF-Model}
+\end{figure}
+
+A two-winding coreless PCB transformer may be described using the high-frequency transformer model in \figurename{2} \cite{TangHuiFundamental}, where:
+\begin{itemize}
+\item[] \hspace*{-3em} $ R_{1} $ Primary winding resistance;
+\item[] \hspace*{-3em} $ R_{2}' $ Secondary winding resistance, referred to primary;
+\end{itemize}
+
+
+
+The self inductance of the planar winding is given by
 % PRI
 \begin{equation}
 	L_{p} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{p}}{M_{ij}}}
@@ -362,8 +383,8 @@ where
 \section{Topology}
 
 	\subsection{Power}
-	The most basic ues for a planar coreless PCB transformer is in an isolated power transfer application.  Typically, this would be achieved by driving the transformer at its maximum efficiency frequency (MIF) for high power transfer applications, or, where it is desirable to minimse the quiescent power consumption of the transformer, the maximum impedance frequency (MIF).  The MEF will tend to approach the MIF as the transformer's secondary load current decreases \cite{TangHuiFundamental}.  
-	Due to the low secondary load current of the DAQM (approximately 20mW at 3.3V) the MEF of the module's coreless PCB transformer is assumed to be equal to the MIF.  In most papers discussing planar coreless PCB transformers, the primary winding is driven in either a single-ended or bipolar manner [FIGURE] with a relatively high supply voltage (12V being a popular choice for isolated gate drive circuits).  Since the DAQM is to be a 3.3V supply capable device, the PCB transformer is driven in a bipolar manner to achieve an effective doubling of the primary drive voltage.  The primary drive circuit uses a simple relaxation oscillator for the resonant frequency generation, and the transformer's winding is driven directly by the schmitt-trigger's high-current ($ \pm $32mA) push-pull outputs [FIGURE].
+	The most basic use for a planar coreless PCB transformer is in an isolated power transfer application.  Typically, this would be achieved by driving the transformer at its maximum efficiency frequency (MIF) for high power transfer applications, or, where it is desirable to minimise the quiescent power consumption of the transformer, the maximum impedance frequency (MIF).  The MEF will tend to approach the MIF as the transformer's secondary load current decreases \cite{TangHuiFundamental}.  
+	Due to the low secondary load current of the DAQM (approximately 20mW at 3.3V) the MEF of the module's coreless PCB transformer is assumed to be equal to the MIF.  In most papers discussing planar coreless PCB transformers, the primary winding is driven in either a single-ended or bipolar manner [FIGURE] with a relatively high supply voltage (12V being a popular choice for isolated gate drive circuits).  Since the DAQM is to be a 3.3V supply capable device, the PCB transformer is driven in a bipolar manner to achieve an effective doubling of the primary drive voltage.  The primary drive circuit uses a simple relaxation oscillator for the resonant frequency generation, and the transformer's winding is driven directly by the Schmitt-trigger's high-current ($ \pm $32mA) push-pull outputs [FIGURE].
 	On the transformer's secondary side, the output waveform may simply be rectified using an ordinary voltage-doubler rectifier topology [FIGURE].  The figure shows the use of schottky diodes to minimise voltage loss, however, the effect of the diode's junction capacitance on the transformer's resonant frequency should not be neglected.
 	
 	\subsection{Clock Generation and Recovery} % Using method: gating of drive signal (could also be: divide drive signal by two; OR: Amplitude modulation)
@@ -371,43 +392,58 @@ where
 	To recover the clock signal, the transformer's secondary output is essentially low-pass filtered with a cutoff frequency approximately equal to the [SOMETHING].  [FIGURE] shows the decoding circuit, using a Schmitt trigger inverter (with feedback) to bias the filtered signal and provide clean clock transistions for the data converter's clock input.  In applications requiring greater secondary output power, a modulation depth of less than 100\% could be achieved using a transistor and parallel resistor in the primary winding's current path, athough it can be expected that will require a more complex clock recovery filter.
 	
 	\subsection{Data Recovery}
-	The sigma-delta data converter outputs both voltage and current infomration on a single manchester-encoded bitstream at a rate equal to $ f_{clock}/4 $ (typically 2MHz).  To transfer this data from the transformer's secondary side back to the primary, it is necessary to effect the transformer in some way so that the disturbance is detectable at the primary.  Such disturbance detection is performed in commercial RFID systems, where the receiver modulates its antenna's resonant frequency to allow the transmitter to identify the recieving device \cite{RFID}.
+	The sigma-delta data converter outputs both voltage and current infomration on a single manchester-encoded bitstream at a rate equal to $ f_{clock}/4 $ (typically 2MHz).  To transfer this data from the transformer's secondary side back to the primary, it is necessary to effect the transformer in some way so that the disturbance is detectable at the primary.  Such disturbance detection is performed in commercial RFID systems, where the receiver modulates its antenna's resonant frequency to allow the transmitter to identify the receiving device \cite{RFID}.
 
+\section{Experimental Validation}
+To validate the use of planar coreless PCB transformers in the data acquisition module design, a test PCB transformer was manufactured on a standard two-layer, 1.6mm PCB.  The test transformer had 11 turns with identical primary and secondary windings.  The track and spacing width was equal at $ 203.2\mu $m (8 mil), giving an outer diameter of 13.7mm.
 
-Images can be inserted as shown below. We can reference figure \ref{fig:resistor_equivalent_circuit} like so. Use a starred figure environment for double column floats (see fig. \ref{fig:ClockGen}).
+	\subsection{Power}
+	To approximate the expected load of the sigma-delta modulator and associated secondary circuitry, a $500\Omega $ load resistor was fitted after the rectifier.  By sweeping the primary drive frequency over the range of 500kHz to 25MHz, the coreless PCB test transformer, with primary-side Schmitt trigger driver and secondary side rectifier could be analysed for input impedance- and output voltage- versus frequency (FIGURE).  The figure shows a clear distinction between the MIF (13MHz) and MEF (15.5MHz), however the reasonably low quality factor of the MEF peak suggests that driving the transformer at a frequency of compromise between the MIF and MEF may be desirable.  The also data demonstrates the effectiveness of driving the transformer in a bipolar manner, which has resulted in an output voltage approximately 1.6 times the 3.3V primary supply voltage - thus increasing the usable voltage range of the data acquisition module and simplifying the secondary voltage supply circuitry.
+	FIGURE shows the coreless PCB test transformer's secondary rectified output power and voltage versus load current.  It shows a maximum power point of 47mW, and that for a minimum pre-regulator voltage of 3.5V, the load current may be up to 11mA (about 40mW) - twice the expected power required by the DAQM's secondary circuitry.  
+	As a compromise between the MIF (13MHz) and MEF (15.5MHz), the test transformer drive frequency was adjusted to 14MHz (see FIGURE).  This data shows improved load regulation and a shift in the maximum power point toward greater load currents, as well as a slight reduction in maximum power (approximately 47mW max versus 40mW max).  This suggests that transformer operation at a MEF-MIF compromise frequency (rather than at the MEF exactly) can have benefits for applications with greater secondary loads where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used herein).  The recommended experimental frequency setting procedure is to configure the secondary circuit for maximum expected load, then adjust the primary driver frequency for maximum secondary output voltage.
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.8\columnwidth]{./img/resistor_equivalent_circuit}
-	\caption{Lumped circuit model of a non-ideal resistor.}
-	\label{fig:resistor_equivalent_circuit}
-\end{figure}
-
-\begin{figure*}[t] 
-	\centering
-	\includegraphics[width=1.0\textwidth]{./img/ClockGen}
-	\caption{An example scope capture.}
-	\label{fig:ClockGen}
-\end{figure*}
-
-\section{Math}
-
-We can include equations like so.
-
-\begin{equation} \label{eq:current_sense_transfer_function}
-	\frac{V(s)}{I(s)} = R + sL_s = R\left(1 + s\frac{L_s}{R}\right)
-\end{equation}
-
-We can also reference equation \ref{eq:current_sense_transfer_function}.
-
-	\subsection{Unnecessary subsection}
-	\label{sec:unnecessary}
-
-	This subsection is unnecessary, but serves as an example.
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=1\columnwidth]{./img/ZandVoutVsF_3V3}
+		\caption{Input impedance and output voltage versus frequency at 3.3V.}
+		\label{fig:ZandVvsF}
+	\end{figure}
 	
-	\subsection{Unnecessary subsection}
-
-	Like section \ref{sec:unnecessary}, this subsection is unnecessary, but \textit{also} serves as an example.
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=1\columnwidth]{./img/VandPvsI}
+		\caption{Secondary output voltage and power versus load current at MEF (15.5MHz).}
+		\label{fig:VandPvsI}
+	\end{figure}
+	
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=1\columnwidth]{./img/VandPvsI_retuned}
+		\caption{Secondary output voltage and power versus load current at MIF-MEF compromise (14MHz).}
+		\label{fig:VanndPvsI_retuned}
+	\end{figure}
+	
+	\subsection{Clock Generation and Recovery}
+	Since the sigma-delta modulator's clock is derived from the drive frequency of the primary winding, it is necessary for the primary drive frequency to be an exact power-of-two multiple of the desired modulator frequency, which may vary from DC to 8MHz.  For the DAQM application, however, the external clock is necessary for multi-module synchronisation, and there is no desire to operate the sigma-delta modulator at a clock frequency other than 8MHz.  The test coreless PCB transformer has been designed for a 16MHz resonant frequency, with prior figures showing this to be the case in practice.  FIGURE shows the 16MHz clock signal (Reference - white), secondary output voltage (Channel 1 - yellow) and extracted clock signal (Channel 2 - cyan).  The divide-by-two clock extraction method appears effective, even with a varying secondary load, and further testing showed the simple circuit was able to accurately output a clock signal over the transformer drive frequency range of 11MHz to 16MHz.  The figures show no reason why a higher order division (divide by 4, for example) could not be used if desired.
+	
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=0.8\columnwidth]{./img/Clock}
+		\caption{16MHz input clock signal (top); secondary output voltage (centre); 8MHz extracted clock signal (bottom).}
+		\label{fig:Clock}
+	\end{figure}
+	
+	\subsection{Data Recovery}
+	To test the data recovery circuit, a second PCB transformer was obtained with physical specifications identical to the unit discussed prior.  This second test transformer, however, had its load capacitor (which was 100pF in the prior unit) removed, such that its resonant frequency (now estimated to be >80MHz) was much greater than the expected data frequency - a key requirement of the data detection circuit.  Driving the transformer in a single-ended configuration was achieved by grounding one terminal and connecting the other, via a small capacitor, to a signal generator simulating the sigma-delta modulator's data output.  Due to hardware availability issues, the high-speed ($ t_{d} \leq 10ns $) Schmitt NAND gate specified in the circuit was substituted for an ordinary-speed ($ t_{d} \approx 250ns $) Schmitt NAND gate, which resulted in poor performance above about 500kHz (due to the fast impulses generated by the edge detection circuit).  FIGURE shows the data recovery circuit operating at 100kHz, where Channel 1 (bottom) is the 2MHz simulated data into the transformer; Channel 2 is the output of the negative edge amplifier (node 'Neg Edge' in FIGURE); Channel 3 is the output of the positive edge amplifier (node 'Pos Edge' in FIGURE); and Channel 4 (top) is the recovered 2MHz data signal.
+	MORE TO COME
+	* 5 turns
+	
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=0.8\columnwidth]{./img/DataUncropped}
+		\caption{Data into transformer (CH1, bottom); output of negative edge amplifier (CH2); output of positive edge amplifier (CH3); recovered data signal at output of transformer (CH4, top).}
+		\label{fig:Data}
+	\end{figure}
 
 \section{Conclusion}
 
@@ -416,11 +452,6 @@ Conclusion goes here.
 % conference papers do not normally have an appendix	
 
 % use section* for acknowledgement
-\section*{Acknowledgements}
-
-Probably no acknowledgements required. If the HPC is used the line below should be included.
-
-Computational (and/or data visualisation) resources and services used in this work were provided by the HPC and Research Support Group, Queensland University of Technology, Brisbane, Australia.
 
 % trigger a \newpage just before the given reference
 % number - used to balance the columns on the last page
