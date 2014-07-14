@@ -361,8 +361,17 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 \\$ C_{1}    $ \hspace{20pt} Sum of primary winding capacitance and primary driver output capacitance;
 \\$ C_{2}'   $ \hspace{20pt} Sum of secondary winding capacitance and external load capacitance, referred to primary;
 \\$ n        $ \hspace{25pt} Turns ratio;
+\\$ \mu_{0}  $ \hspace{20pt} Permeability of vacuum;
+\\$ a_{1}    $ \hspace{20pt} Inner radius of $i$th circular track filament;
+\\$ a_{2}    $ \hspace{20pt} Outer radius of $i$th circular track filament;
+\\$ h_{1}    $ \hspace{20pt} Height of $i$th circular track filament;
+\\$ r_{1}    $ \hspace{20pt} Inner radius of $j$th circular track filament;
+\\$ r_{2}    $ \hspace{20pt} Outer radius of $j$th circular track filament;
+\\$ h_{2}    $ \hspace{20pt} Height of $j$th circular track filament;
+\\$ z        $ \hspace{26pt} Separation distance between the circular tracks;
+\\$ J_{0}(x) $ \hspace{9pt} Bessel function of the first kind, order zero.
 
-The self inductance of the planar winding is given by
+\hspace{-20pt} The self inductance of the planar winding is given by
 % PRI
 \begin{equation}
 	L_{p} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{p}}{M_{ij}}}
@@ -373,14 +382,14 @@ The self inductance of the planar winding is given by
 	L_{s} = \sum\limits_{j=1}^{N_{s}}{\sum\limits_{i=1}^{N_{s}}{M_{ij}}}
 \end{equation}
 
-And thus, the mutual inductance between the two planar windings may be represented as
+\hspace{-20pt} And thus, the mutual inductance between the two planar windings may be represented as
 %
 \begin{equation}
 	M_{ps} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{s}}{M_{ij}}}
 \end{equation}
 
 % MAHB: Removed autor names
-where the mutual inductance, $ M_{ij} $, has been reported in \cite{HurleyDuffy}
+\hspace{-20pt} where the mutual inductance, $ M_{ij} $, has been reported in \cite{HurleyDuffy}
 % MAHB: Split equation over multiple lines
 \begin{equation}
 \begin{split}
@@ -389,14 +398,60 @@ where the mutual inductance, $ M_{ij} $, has been reported in \cite{HurleyDuffy}
 \end{split}
 \end{equation}
 
-where
+\hspace{-20pt} where
 \begin{equation}
 	S(kx, ky) = \frac{J_{0}(kx) - J_{0}(ky)}{k}
 \end{equation}
 %
 \begin{equation}
-	Q(ka_{2},ka_{1}) = \frac{J_{0}(ka_{2})-J_{0}(ka_{1})}{k}
+	Q(kx, ky) = \left\{
+		\begin{array}{lr}
+		\frac{2}{k^{2}} \left[ \cosh{k\frac{x+y}{2}}-\cosh{k\frac{x-y}{2}} \right] & z>\frac{h_{1}+h_{2}}{2} \\
+		\frac{2}{k} \left[ h+\frac{e^{-kh}-1}{k} \right] & z=0, x=y=h
+		\end{array}
+   \right.
 \end{equation}
+
+\hspace{-20pt} To approximate the performance of the coreless PCB transformer, \cite{TangHuiFundamental} gives the resonant frequency as
+
+\begin{equation}
+	f_{0} = \frac{1}{2\pi\sqrt{L_{eq}C_{eq}}};
+\end{equation}
+
+\hspace{-20pt} and the $s$-domain voltage gain (\ref{eqn:vGain}) and input impedance (\ref{eqn:zIn}) of as
+%
+\begin{equation}
+	\label{eqn:vGain}
+	\frac{V_{s}}{V_{p}} = G(s) = B = \frac{\frac{1}{X_{1}}+sC_{12}'Y_{1}}{nY};
+\end{equation}
+%
+\begin{equation}
+	\label{eqn:zIn}
+	Z_{in} = \frac{1}{sC_{12}'(1-nB)+\frac{1-A}{X_{1}}+sC_{1}'}.
+\end{equation}
+%
+\hspace{-20pt} Although it is not of great concern to the DAQM application (due to the low secondary power requirements), the efficiency of the coreless PCB transformer may be calculated as follows
+% Power out
+\begin{equation}
+	P_{out} = \frac{|G(s)|^{2}\cdot|V_{p}|^{2}}{R_{L}};
+\end{equation}
+% Power in
+\begin{equation}
+	P_{in} = |V_{p}|^{2}\cdot\Re \left[ \frac{1}{Z_{in}} \right];
+\end{equation}
+\hspace{-20pt} and thus, \\
+% Efficiency
+\begin{equation}
+	\eta = \frac{|G(s)|^{2}}{R_{L}\cdot\Re \left[ \frac{1}{Z_{in}} \right]}\times 100 \%.
+\end{equation}
+
+
+\hspace{-20pt} where \\
+$ L_{eq} = L_{LK2}'+L_{LK1}||L_{M} $, \\
+$ C_{eq} = C_{2}'+C_{12}' $.		  \\
+
+
+
 
 % MAHB: Renamed section heading
 % Power, Clock, Data
