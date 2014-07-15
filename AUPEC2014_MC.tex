@@ -369,7 +369,7 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 \\$ r_{2}    $ \hspace{20pt} Outer radius of $j$th circular track filament;
 \\$ h_{2}    $ \hspace{20pt} Height of $j$th circular track filament;
 \\$ z        $ \hspace{26pt} Separation distance between the circular tracks;
-\\$ J_{0}(x) $ \hspace{9pt} Bessel function of the first kind, order zero.
+\\$ J_{0}(x) $ \hspace{9pt}  Bessel function of the first kind, order zero.
 
 \hspace{-20pt} The self inductance of the planar winding is given by
 % PRI
@@ -445,11 +445,23 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 	\eta = \frac{|G(s)|^{2}}{R_{L}\cdot\Re \left[ \frac{1}{Z_{in}} \right]}\times 100 \%.
 \end{equation}
 
-
 \hspace{-20pt} where \\
-$ L_{eq} = L_{LK2}'+L_{LK1}||L_{M} $, \\
-$ C_{eq} = C_{2}'+C_{12}' $.		  \\
 
+\begin{equation*}
+	L_{eq}   = L_{LK2}'+L_{LK1}||L_{M} 										\\
+	C_{eq}   = C_{2}'+C_{12}'												\\
+	R_{2}'   = n^{2}R_{2}													\\
+	L_{LK2}' = n^{2}L_{LK2}													\\
+	C_{1}'   = C_{1} + \frac{n-1}{n}C_{12}									\\
+	C_{2}'   = \frac{1}{n^{2}}C_{2} + \frac{1-n}{n^{2}}C_{12				\\
+	C_{12}'  = \frac{1}{n}C_{12}											\\
+	X_{1}    = R_{1}  + sL_{LK1}											\\
+	X_{2}    = R_{2}' + sL_{LK2}'											\\
+	Y_{1}    = X_{2} \lbrack \frac{1}{X_{1}} + \frac{1}{sL_{M}}+1			\\
+	Y_{2}    = \frac{1}{X_{2}} + sC_{12}' + sC_{2}' + \frac{1}{n^{2}R_{L}}	\\
+	Y        = -\frac{1}{X_{2}} + Y_{1}Y_{2}								\\
+	A        = \frac{sC_{12}' + \frac{X_{2}}{X_{1}} Y_{2}}{Y}				\\
+\end{equation*}
 
 
 
