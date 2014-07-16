@@ -265,7 +265,7 @@
 
 
 % correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor}
+\hyphenation{op-tical net-works semi-conduc-tor trans-former core-less}
 
 
 \begin{document}
@@ -302,7 +302,7 @@ Email: michael.carpenter@student.qut.edu.au}}
 
 \begin{abstract}
 %\boldmath
-Energy monitoring and power quality analysis has, and always will be, a necessity in industrial and commercial situations....
+Energy monitoring and power quality analysis plays a vital role in industrial and commercial situations, where data may be used to detect faults, monitor energy usage, and refine processes.  Currently, energy metering devices are typically expensive and low-bandwidth, making them poorly suited to a modular multi-sensor data collection scheme.  This paper presents the concept of a isolated, low-cost, modular data acquisition module for use in a distributed multi-sensor, single-host environment.  The paper focusses primarily on the practical use of planar coreless PCB transformers, which facilitates the module's isolated power, clock and data signal transfer.
 \end{abstract}
 
 
@@ -447,22 +447,21 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 
 \hspace{-20pt} where \\
 
-\begin{equation*}
-	L_{eq}   = L_{LK2}'+L_{LK1}||L_{M} 										\\
-	C_{eq}   = C_{2}'+C_{12}'												\\
-	R_{2}'   = n^{2}R_{2}													\\
-	L_{LK2}' = n^{2}L_{LK2}													\\
-	C_{1}'   = C_{1} + \frac{n-1}{n}C_{12}									\\
-	C_{2}'   = \frac{1}{n^{2}}C_{2} + \frac{1-n}{n^{2}}C_{12				\\
-	C_{12}'  = \frac{1}{n}C_{12}											\\
-	X_{1}    = R_{1}  + sL_{LK1}											\\
-	X_{2}    = R_{2}' + sL_{LK2}'											\\
-	Y_{1}    = X_{2} \lbrack \frac{1}{X_{1}} + \frac{1}{sL_{M}}+1			\\
-	Y_{2}    = \frac{1}{X_{2}} + sC_{12}' + sC_{2}' + \frac{1}{n^{2}R_{L}}	\\
-	Y        = -\frac{1}{X_{2}} + Y_{1}Y_{2}								\\
-	A        = \frac{sC_{12}' + \frac{X_{2}}{X_{1}} Y_{2}}{Y}				\\
-\end{equation*}
-
+\begin{align*}
+	L_{eq}   &= L_{LK2}'+L_{LK1}||L_{M} 	\\
+	C_{eq}   &= C_{2}'+C_{12}'				\\
+	R_{2}'   &= n^{2}R_{2}					\\
+	L_{LK2}' &= n^{2}L_{LK2}				\\
+	C_{1}'   &= C_{1} + \frac{n-1}{n}C_{12}	\\
+	C_{2}'   &= \frac{1}{n^{2}}C_{2} + \frac{1-n}{n^{2}}C_{12}	\\
+	C_{12}'  &= \frac{1}{n}C_{12}			\\
+	X_{1}    &= R_{1}  + sL_{LK1}			\\
+	X_{2}    &= R_{2}' + sL_{LK2}'			\\
+	Y_{1}    &= X_{2} \lbrack \frac{1}{X_{1}} + \frac{1}{sL_{M}}+1	\\
+	Y_{2}    &= \frac{1}{X_{2}} + sC_{12}' + sC_{2}' + \frac{1}{n^{2}R_{L}}	\\
+	Y        &= -\frac{1}{X_{2}} + Y_{1}Y_{2}	\\
+	A        &= \frac{sC_{12}' + \frac{X_{2}}{X_{1}} Y_{2}}{Y}
+\end{align*}
 
 
 % MAHB: Renamed section heading
