@@ -278,7 +278,7 @@
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
-\author{\IEEEauthorblockN{Michael Carpenter and Mark A. H. Broadmeadow}
+\author{\IEEEauthorblockN{Michael T. Carpenter and Mark A. H. Broadmeadow}
 \IEEEauthorblockA{School of Electrical Engineering and Computer Science\\
 Queensland University of Technology\\
 Brisbane, Australia\\
@@ -358,6 +358,8 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 \item[\hspace{-10pt}$ L_{LK1} $]  \hspace{-15pt} Primary leakage inductance;
 \item[\hspace{-10pt}$ L_{LK2}' $] \hspace{-15pt} Secondary leakage inductance, referred to primary;
 \item[\hspace{-10pt}$ L_{M} $]    \hspace{-15pt} Mutual inductance;
+\item[\hspace{-10pt}$ L_{P} $]    \hspace{-15pt} Primary self-inductance, equal to $ L_{M} + L_{LK1} $;
+\item[\hspace{-10pt}$ L_{S} $]    \hspace{-15pt} Secondary self-inductance, equal to $ L_{M} + L_{LK2} $;
 \item[\hspace{-10pt}$ C_{12} $]   \hspace{-15pt} Primary-to-secondary winding capacitance;
 \item[\hspace{-10pt}$ C_{1} $]    \hspace{-15pt} Sum of primary winding capacitance and primary driver output capacitance;
 \item[\hspace{-10pt}$ C_{2}' $]   \hspace{-15pt} Sum of secondary winding capacitance and external load capacitance, referred to primary;
@@ -465,20 +467,12 @@ and thus, \\
 	A        &= \frac{sC_{12}' + \frac{X_{2}}{X_{1}} Y_{2}}{Y}
 \end{align*}
 
-
-% MAHB: Renamed section heading
-% Power, Clock, Data
 \section{Implementation of power and signal isolation using PCB transformers}
 
 	\subsection{Power}
-	% MAHB: MIF corrected to MEF
 	The most basic use for a planar coreless PCB transformer is in an isolated power transfer application.  Typically, this would be achieved by driving the transformer at its maximum efficiency frequency (MEF) for high power transfer applications, or, where it is desirable to minimise the quiescent power consumption of the transformer, the maximum impedance frequency (MIF).  The MEF will tend to approach the MIF as the transformer's secondary load current decreases \cite{TangHuiFundamental}.  
-	Due to the low secondary load current of the DAQM, approximately 6mA at 3.3V (20mW), the MEF of the module's coreless PCB transformer was initially assumed to be equal to the MIF.  In most papers discussing planar coreless PCB transformers, the primary winding is driven in either a single-ended or bipolar manner \ref{fig:BIvsSE} with a relatively high supply voltage (12V being a popular choice for isolated gate drive circuits).  Since the DAQM is to be a 3.3V supply capable device, the PCB transformer is driven in a bipolar manner to achieve an effective doubling of the primary drive voltage.  The primary drive circuit uses a simple relaxation oscillator for the resonant frequency generation, and the transformer's winding is driven directly by the Schmitt-trigger's high-current ($ \pm $32mA) push-pull outputs \ref{fig:TFpwrclk_BW}.
-	On the transformer's secondary side, the output waveform may simply be rectified using a voltage-doubler rectifier topology \ref{fig:TFpwrclk_BW}, with a zener clamping diode to ensure the voltage regulator's maximum input voltage is not exceeded.  The additional load capacitance, primarily due to the rectifier diode array D2 and coupling capacitor C4, can reduce the PCB transformer's resonant frequency by 5\%-10\%.  When the regulator's input capacitor is much greater than each of the rectifier diode's junction capacitance, that is, $ C7 \gg C_{D}$, the additional load capacitance may be estimated as 
-	 
-	\begin{equation*}
-		C_{extra} = C4 // (C_{D2a}+C{D2b})
-	\end{equation*}
+	Due to the low secondary load current of the DAQM, approximately 6mA at 3.3V (20mW), the MEF of the module's coreless PCB transformer was initially assumed to be equal to the MIF.  In most papers discussing planar coreless PCB transformers, the primary winding is driven in either a single-ended or bipolar manner \ref{fig:BIvsSE} with a relatively high supply voltage (12V being a popular choice for isolated gate drive circuits).  Since the DAQM is to be a 3.3V supply capable device, the PCB transformer is driven in a bipolar manner to achieve an effective doubling of the primary drive voltage.  The primary drive circuit uses a simple relaxation oscillator for the resonant frequency generation, and the transformer's winding is driven directly by the Schmitt-trigger's high-current (170mW at 85$\deg$C or $\pm$100mA maximum) push-pull outputs \ref{fig:TFpwrclk}.
+	On the transformer's secondary side, the output waveform may simply be rectified using a voltage-doubler rectifier topology \ref{fig:TFpwrclk}, with a zener clamping diode to ensure the voltage regulator's maximum input voltage is not exceeded.  The additional load capacitance, primarily due to the rectifier diode array D2 and coupling capacitor C4, can reduce the PCB transformer's resonant frequency by 5\%-10\%.  The additional load capacitance may be estimated as the series coupling capacitor (C4) in parallel with the sum of the two diode junction capacitances in rectifier array D2.
 	
 	\begin{figure}[t]
 		\centering
@@ -491,24 +485,51 @@ and thus, \\
 		\centering
 		\includegraphics[width=1.0\textwidth]{./img/TFpwrclk_BW}
 		\caption{Coreless PCB transformer driver (a) with power rectifier (b) and clock extraction circuitry (c) highlighted.}
-		\label{fig:TFpwrclk_BW}
+		\label{fig:TFpwrclk}
 	\end{figure*}	
 	
 	\subsection{Clock Generation and Recovery} % Using method: multiple of drive freq
-	In order to provide a clock signal of approximately 8MHz to the frontend ADC, a method of transferring this clock signal via the PCB transformer from the DAQM's primary side to the secondary side (where the sigma-delta data converter resides) was required.  It is desirable to allow the sigma-delta modulator to be externally clocked as this allows for synchronisation in multi-module systems, thus simplifying the filtering and data consolidation process.  Since a coreless PCB transformer's resonant frequency may be adjusted quickly and easily using the external load capacitance, it is possible to drive the transformer at any power-of-two multiple of the desired modulator clock frequency (provided the resulting drive frequency results in sufficient secondary output voltage).  The clock signal may then extracted simply by rectifying, filtering and dividing the transformer's secondary voltage waveform.  The resulting clock recovery circuit has been highlighted in FIGURE.
+	In order to provide a clock signal of approximately 8MHz to the frontend ADC, a method of transferring this clock signal via the PCB transformer from the DAQM's primary side to the secondary side (where the sigma-delta data converter resides) was required.  It is desirable to allow the sigma-delta modulator to be externally clocked as this allows for synchronisation in multi-module systems, thus simplifying the filtering and data consolidation process.  Since the clock frequency was to remain relatively fixed, the simplest method of transferring the signal to the DAQM's isolated side was to set the coreless PCB transformer's primary drive frequency to be equal to a power-of-two multiple of the desired clock frequency.  In this way, the clock signal could be extracted by rectifying, filtering and dividing the transformer's secondary voltage waveform (\ref{fig:TFpwrclk}).
+	%Since a coreless PCB transformer's resonant frequency may be adjusted quickly and easily using the external load capacitance, it is possible to drive the transformer at any power-of-two multiple of the desired modulator clock frequency (provided the resulting drive frequency results in sufficient secondary output voltage).	
 	
 	\subsection{Data Recovery}
-	The sigma-delta data converter encodes both voltage and current information into a single Manchester-encoded bitstream at a rate equal to $ f_{clock}/4 $ (typically 2MHz).  To transfer this data back to the primary side of the data acquisition module, a second coreless PCB transformer may be used.  Since the data signal is not periodic in the way that a clock signal may be, it is necessary to configure the data transformer for a very high resonant frequency.  This ensures that only the high-frequency square wave transitions are sent over the coil.  As the data frequency approaches the transformer's resonant frequency, the transformer's output voltage can be seen to 'ring' after the fundamental edge transition is transmitted - a benefit when maximum power transfer is required, but detrimental to the signal integrity of data transmissions.  To achieve a very high resonant frequency, the EQUATIONS imply that either the number of primary and secondary turns (and thus the primary and secondary outer diameter) should be decreased, and/or the external load capacitor may be reduced or removed.
-	FIGURE shows the signal transformer and data recovery circuit.  On the signal transformer's secondary side (where the sigma-delta modulator is located), the data output of the modulator is capacitively coupled into the signal transformer, which is driven in a single-ended configuration.  On the primary side, the low-amplitude (50mV to 500mV may be expected) positive- and negative-going spikes, which represent the rising and falling edges of the data signal respectively, are first amplified by a bipolar junction transistor (BJT).  The amplifier's output is then coupled into two more BJTs with necessary biasing to allow the discrimination of the positive- and negative-going transitions.  The output of each of the 'edge transition detectors' is then fed into a set/reset latch constructed from a dual Schmitt-input NAND array.  As an added benefit, the outputs of the two NAND gates are complementary and thus allow for differential signal driving back to the host FPGA (which may be located some distance away).
+	The sigma-delta modulator encodes both voltage and current information into a single Manchester-encoded bitstream at a rate equal to $ f_{clock}/4 $ (typically 2MHz).  To transfer this data back to the primary side of the data acquisition module, a second coreless PCB transformer was used.  Since the data signal is not periodic in the way that a clock signal is, it is necessary to configure the data transformer for a very high resonant frequency, thus ensuring that only the high-frequency square wave transitions are sent over the coil.  As the data frequency approaches the transformer's resonant frequency, the transformer's output voltage can be seen to 'ring' after the fundamental edge transition is transmitted - a benefit when maximum power transfer is required, but detrimental to the signal integrity of data transmissions.  To achieve a very high resonant frequency, the equations in section `Planar coreless PCB transformers' implies that either the number of primary and secondary turns (and thus the primary and secondary winding outer diameter) should be decreased, and/or the external load capacitor may be reduced or removed. \\
+	\ref{fig:TFdat} shows the signal transformer and data recovery circuit.  On the coreless PCB transformer's secondary side (where the sigma-delta modulator is located), the data output of the modulator is capacitively coupled into the signal transformer, which is driven in a single-ended configuration.  On the primary side, the low-amplitude (50mV to 500mV may be expected) positive- and negative-going spikes, which represent the rising and falling edges of the data signal respectively, are first amplified by a bipolar junction transistor (BJT).  The amplifier's output is then coupled into two more BJTs with necessary biasing to allow the discrimination of the positive- and negative-going transitions.  The output of each of the 'edge transition detectors' is then fed into a set/reset latch constructed from a dual Schmitt-input NAND array to complete the decoding circuit.  As an added benefit, the outputs of the two NAND gates are complementary and thus allow for differential signal driving back to the host FPGA (which may be located some distance away).
+
+	\begin{figure*}[t]
+		\centering
+		\includegraphics[width=1.0\textwidth]{./img/TFdat_BW}
+		\caption{Signal transformer and isolated data recovery circuit.}
+		\label{fig:TFdat}
+	\end{figure*}
 	
-\section{Experimental Validation}
-To validate the use of planar coreless PCB transformers in the data acquisition module design, a test PCB transformer was manufactured on a standard two-layer, 1.6mm PCB.  The test transformer had 11 turns with identical primary and secondary windings.  The track and spacing width was equal at $ 203.2\mu $m (8 mil), giving an outer diameter of 13.7mm.
+\section{Experimental validation}
+To validate the use of planar coreless PCB transformers in the data acquisition module design, a test PCB transformer was manufactured on a standard two-layer, 1.6mm PCB (\ref{fig:DAQMphoto}).  The test transformer had 11 turns with identical primary and secondary windings, a track and spacing width equal to $ 203.2\mu $m (8 mil), a 100pF external load capacitor (C3 in \ref{fig:TFpwrclk}) and a 500$\Omega$ load resistor.  With an outer diameter of 13.7mm and inner diameter of , the transformer's calculated parameters were
+....
+Figure \ref{fig:NoRect} shows the test transformer's calculated and measured input impedance and voltage gain versus frequency, where only the secondary-side load resistor of 500$\Omega$ is fitted (that is, no rectifier or clock decoder).  The plots show a MEF (9dB voltage gain) at 18MHz and a MIF (142$\Omega$ input impedance) at about 14.5MHz (measured values).  The calculated performance curves are shown to be a good representation of the actual device performance, especially with regard to the coreless PCB transformer's voltage gain.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=1.0\columnwidth]{./img/NoRectTF}
+	\caption{Test transformer's input impedance and voltage gain versus drive frequency.}
+	\label{fig:NoRect}
+\end{figure}
+%
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{./img/DAQMphoto}
+	\caption{Photograph of an initial DAQM prototype with single 11-turn transformer.}
+	\label{fig:DAQMphoto}
+\end{figure}
 
 	\subsection{Power}
-	% MAHB: Fixed working. Data are plural.
-	To approximate the expected load of the sigma-delta modulator and associated secondary circuitry, a $500\Omega $ load resistor was fitted after the rectifier.  By sweeping the primary drive frequency over the range of 500kHz to 25MHz, the coreless PCB test transformer, with primary-side Schmitt trigger driver and secondary side rectifier could be analysed for input impedance- and output voltage- versus frequency (FIGURE).  The figure shows a clear distinction between the MIF (13MHz) and MEF (15.5MHz), however the reasonably low quality factor of the MEF peak suggests that driving the transformer at a frequency of compromise between the MIF and MEF may be desirable.  The data also demonstrate the effectiveness of driving the transformer in a bipolar manner, which has resulted in an output voltage approximately 1.6 times the 3.3V primary supply voltage - thus increasing the usable voltage range of the data acquisition module and simplifying the secondary voltage supply circuitry.
-	FIGURE shows the coreless PCB test transformer's secondary rectified output power and voltage versus load current.  It shows a maximum power point of 47mW, and that for a minimum pre-regulator voltage of 3.5V, the load current may be up to 11mA (about 40mW) - twice the expected power required by the DAQM's secondary circuitry.  
-	As a compromise between the MIF (13MHz) and MEF (15.5MHz), the test transformer drive frequency was adjusted to 14MHz (see FIGURE).  This data shows improved load regulation and a shift in the maximum power point toward greater load currents, as well as a slight reduction in maximum power (approximately 47mW max versus 40mW max).  This suggests that transformer operation at a MEF-MIF compromise frequency (rather than at the MEF exactly) can have benefits for applications with greater secondary loads where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used herein).  The recommended experimental frequency setting procedure is to configure the secondary circuit for maximum expected load, then adjust the primary driver frequency for maximum secondary output voltage.
+	%To approximate the expected load of the sigma-delta modulator and associated secondary circuitry, a $500\Omega $ load resistor was fitted after the rectifier.  By sweeping the primary drive frequency over the range of 500kHz to 25MHz, the coreless PCB test transformer, with primary-side Schmitt trigger driver and secondary side rectifier could be analysed for input impedance- and output voltage- versus frequency (FIGURE).  
+	With the rectifier (no regulator; 500$\Omega$ load resistor) and clock extraction circuitry (figure \ref{fig:TFdat}) fitted, figure \ref{fig:ZandVvsF} shows the coreless PCB transformer's primary RMS drive current and rectifier output voltage versus frequency (at 3.3V drive voltage).  
+	The figure shows a reduction in the maximum impedance and efficiency frequencies (14.5MHz and 18Mhz to 13MHz and 15.5MHz respectively), primarily due to the additional load capacitance presented by the rectifier diodes.  Whilst this frequency change can be predicted (as discussed prior) and accounted for by altering the load capacitor (C3 in \ref{fig:TFpwrclk}), in this case, the desired drive frequency is 16MHz and thus adjustment was not necessary.  
+	The experimental data also demonstrates the effectiveness of driving the transformer in a bipolar manner, which has resulted in an output voltage approximately 1.6 times the 3.3V primary supply voltage - thus increasing the usable voltage range of the data acquisition module and simplifying the secondary voltage supply circuitry.  Additionally, the wide frequency range for which the output voltage is adequate for 3.3V regulation, may allow the transformer to be driven at a compromise frequency between the MIF and MEF primarily in an effort to reduce primary drive current.
+	
+	Figure \ref{fig:VandPvsI} shows the coreless PCB test transformer's secondary rectified output power and voltage versus load current.  It shows a maximum power point of 47mW, and that for a minimum pre-regulator voltage of 3.5V, the load current may be up to 11mA (about 40mW) - twice the expected power required by the DAQM's secondary circuitry.  
+	As a compromise between the MIF (13MHz) and MEF (15.5MHz), the test transformer drive frequency was adjusted to 14MHz (figure \ref{fig:VanndPvsI_retuned}).  This data shows improved load regulation and a shift in the maximum power point toward greater load currents, as well as a slight reduction in maximum power (approximately 40mW max versus 47mW max).  This suggests that transformer operation at a MEF-MIF compromise frequency (rather than at the MEF exactly) can have benefits for applications with relatively substantial secondary loads where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used in the DAQM design).  The recommended experimental frequency setting procedure is to configure the secondary circuit for maximum expected load, then adjust the primary driver frequency for maximum secondary output voltage.
 
 	\begin{figure}[t]
 		\centering
@@ -531,8 +552,8 @@ To validate the use of planar coreless PCB transformers in the data acquisition 
 		\label{fig:VanndPvsI_retuned}
 	\end{figure}
 	
-	\subsection{Clock Generation and Recovery}
-	Since the sigma-delta modulator's clock is derived from the drive frequency of the primary winding, it is necessary for the primary drive frequency to be an exact power-of-two multiple of the desired modulator frequency, which may vary from DC to 8MHz.  For the DAQM application, however, the external clock is necessary for multi-module synchronisation, and there is no desire to operate the sigma-delta modulator at a clock frequency other than 8MHz.  The test coreless PCB transformer has been designed for a 16MHz resonant frequency, with prior figures showing this to be the case in practice.  FIGURE shows the 16MHz clock signal (Reference - white), secondary output voltage (Channel 1 - yellow) and extracted clock signal (Channel 2 - cyan).  The divide-by-two clock extraction method appears effective, even with a varying secondary load, and further testing showed the simple circuit was able to accurately output a clock signal over the transformer drive frequency range of 11MHz to 16MHz.  The figures show no reason why a higher order division (divide by 4, for example) could not be used if desired.
+	\subsection{Clock generation and recovery}
+	Since the sigma-delta modulator's clock is derived from the drive frequency of the primary winding, it is simplest for the primary drive frequency to be an exact power-of-two multiple of the desired modulator frequency, so that a series of D flip-flops may divide the signal down to the desired clock.  Since the test coreless PCB transformer has been designed for a 16MHz resonant frequency (with prior figures showing this to be a good operating point in practice), a single flip flop was used to extract the 8MHz frequency.  \ref{fig:Clock} shows the 16MHz clock signal (Reference - black), secondary output voltage (Channel 1 - blue) and extracted clock signal (Channel 2 - red).  The divide-by-two clock extraction method appears effective, even with a varying secondary load, and further testing showed the simple circuit was able to accurately output a 50\%-duty clock signal over the transformer drive frequency range of 11MHz to 16MHz.  The figures show no reason why a higher order division (divide by 4, for example) could not be used if desired.
 	
 	\begin{figure}[t]
 		\centering
