@@ -265,7 +265,7 @@
 
 
 % correct bad hyphenation here
-\hyphenation{op-tical net-works semi-conduc-tor trans-former core-less micro-controller}
+\hyphenation{trans-former core-less micro-controller}
 
 
 \begin{document}
@@ -273,8 +273,8 @@
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
 \title{A modular ADC system for power data \\acquisition utilising coreless PCB transformers \\for power and signal isolation}
-
-
+%
+%
 % author names and affiliations
 % use a multiple column layout for up to three different
 % affiliations
@@ -300,14 +300,14 @@ Email: michael.carpenter@student.qut.edu.au}}
 % make the title area
 \maketitle
 
+% There's a lot of vertical space after the title, can it be reclaimed??
+
 \begin{abstract}
 %\boldmath
 % Not sure about my use of future tense when describing the measurement module here...
-Although current industrial energy meters offer high accuracy and reliability, they are typically expensive and low-bandwidth, making them poorly suited to a multi-sensor data collection scheme.  As a result, this paper proposes the concept of a measurement device that is highly modular and extendible, in addition to being accurate, compact and low-cost.  To minimise cost, the proposed measurement device will make use of planar coreless PCB transformer in order to provide galvanically isolated outputs.  The network of measurement devices would then be consolidated by a central processing device (for example, an FPGA) before integration with existing control systems and computer consoles.  
-This paper focusses primarily on the practical use of planar coreless PCB transformers, which will facilitate the module's isolated power, clock and data signal transfer.  The paper presents calculations necessary to design coreless PCB transformers, and shows circuits designed for the transformer's practical application in the measurement module.  The coreless PCB transformer and each associated application circuit is experimentally verified, with test data and conclusions made applicable to coreless PCB transformers in general.
+Although current industrial energy meters offer high accuracy and reliability, they are typically expensive and low-bandwidth, making them poorly suited to a multi-sensor data collection scheme.  As a result, this paper proposes a measurement device that is highly modular and extendible, as well as being compact and low-cost.  To minimise cost, the device will make use of planar coreless PCB transformers in order to provide galvanic isolation of its inputs and outputs.  The data from the acquisition devices would then be concentrated by a central processor before integration with existing control systems and computer consoles.  \\
+This paper focusses on the practical use of planar coreless PCB transformers, which will facilitate the module's isolated power, clock and data signal transfer.  Calculations necessary to design coreless PCB transformers, and circuits designed for the transformer's practical application in the measurement module are presented.  The transformer itself and each application circuit has been experimentally verified, with test data and conclusions made applicable to coreless PCB transformers in general.
 \end{abstract}
-% Removed from abstract:
-% Energy monitoring and power quality analysis plays a vital role in industrial and commercial situations, where data may be used to detect faults, monitor energy usage, and refine processes.
 
 % Do keywords go somewhere?
 
@@ -315,21 +315,22 @@ This paper focusses primarily on the practical use of planar coreless PCB transf
 
 \section{Introduction}
 % I think my introduction = abbstract (or vice-versa), not sure if this is OK..
-Currently, industrial energy users are limited to the use of generally expensive and low-bandwidth energy usage data collection devices. Although such metering devices are well suited to high-accuracy, high-energy systems, they are poorly suited to modular, multi-sensor data collection schemes.  To facilitate industrial process refinement, fault detection and energy usage analysis, the Queensland University of Technology researchers are currently developing a galvanically isolated, low-cost, high-bandwidth data acquisition module (herein referred to as a DAQM).  Data from the network of distributed measurement modules will be consolidated by a central processor (such as an FPGA), with a microcontroller facilitating the data logging and integration into existing control systems and computer consoles.
+Currently, industrial energy users are limited to expensive and low-bandwidth energy usage data collection devices. Although such metering devices are well suited to high-accuracy, high-energy systems, they are poorly suited to modular, multi-sensor data collection schemes.  To facilitate industrial process refinement, fault detection and energy usage analysis, Queensland University of Technology researchers are currently developing an isolated, low-cost, high-bandwidth data acquisition module (herein referred to as a DAQM).  Data from the network of distributed measurement modules will be concentrated by a central processor (such as an FPGA), with a microcontroller facilitating the data logging and integration into existing control systems and computer consoles.
 
-Conventionally, a galvanically isolated power supply is designed using a transformer with magnetic core to provide isolation in one of several DC-DC conversion topologies.  Although a proven, reliable technology capable of high power and high efficiency, the transformer can be an expensive and bulky component.  Additionally, in an application with a very low output power requirement, the transformer, and possibly the entire DC-DC converter design, may be excessively over-engineered for the low-power application - unnecessarily increasing the system size and cost.
+% MC Removed to save space
+%Conventionally, a galvanically isolated power supply is designed using a transformer with magnetic core to provide isolation.  Although a proven, reliable technology capable of high efficiency and high power transfer, the transformer can be an expensive and bulky component, especially in applications where the output power is very low.
+%\\
+%For isolated data transfer, opto-couplers are a popular solution for many low- to moderate-frequency systems, however devices capable of reliable operation at more than a few megaertz are expensive.  A relatively new method of signal isolation, the digital isolator, can operate at up to many tens of megahertz, however with a typical price of several dollars per two-channel unit (in 1ku quantities), their application in a low-cost device (such is the data acquisition module) is limited.
+
+Planar coreless PCB transformers are not a new idea, and considerable work has been published on their use in isolated gate drive circuits \cite{TangHuiFundamental}\cite{NaturallySoft}\cite{OptimalOperation}\cite{CorelessGateDrive}.  Although wireless charging systems for consumer electronics use a very similar concept, coreless PCB transformers have not seen significant use as a power and signal transfer device within commercial electronics.  Since a coreless PCB transformer's only cost is the PCB area it consumes, they are well suited for low-cost applications, and the use of standard PCB manufacturing processes makes their construction predictable and repeatable.
 \\
-For isolated data transfer, opto-couplers are a popular solution for many low- to moderate-frequency systems.  For high-frequency applications (such as high-speed ADC data transfer), opto-couplers capable of reliable operation at several megahertz are expensive.  A relatively new method of signal isolation, the digital isolator, can operate at up to many tens of megahertz, however with a typical price of several dollars per two-channel unit (in 1ku quantities), their application in a low-cost device (such is the data acquisition module) is limited.
-
-
-Planar coreless PCB transformers are not a new idea, and considerable work has been published on their use in isolated gate drive circuits for switch-mode power converters \cite{TangHuiFundamental}\cite{NaturallySoft}\cite{OptimalOperation}\cite{CorelessGateDrive}.  Although wireless charging systems for consumer electronics use a very similar concept, coreless PCB transformers have not seen significant use as a power and signal transfer device within commercial electronics.  Since a coreless PCB transformer's only cost is the PCB area it consumes, they are well suited for low-cost applications, and the use of standard PCB manufacturing processes makes their construction predictable and repeatable.
-\\
-This paper will focus primarily on the practical application of planar coreless PCB transformers as used for the module's isolated power, clock and data signal transfer.  Calculations necessary to design the coreless PCB transformers are presented, and practical circuits designed for the DAQM application, but applicable to coreless PCB transformers in general, are included.  The experimental validation section demonstrates the viability of the use of a coreless PCB transformer in the DAQM application.  Test results for the transformer itself and each associated application circuit is shown, with the test data and conclusions applicable to coreless PCB transformer-based designs in general.
+This paper will focus primarily on the practical application of planar coreless PCB transformers as used for the module's isolated power, clock and data signal transfer.  Calculations necessary to design the coreless PCB transformers are presented, and practical circuits designed for the DAQM application, but applicable to coreless PCB transformers in general, are included.  The experimental validation section demonstrates the viability of the use of coreless PCB transformers (and associated circuitry) in the DAQM application, with test data and conclusions made applicable to coreless PCB transformer-based designs in general.
 
 \section{Proposed modular data acquisition system}
-The complete data acquisition system (figure \ref{fig:FullSystem}) comprises of one or more data acquisition modules (DAQMs), a data consolidation FPGA, and a microcontroller attached to a PC, display or storage device.  
-The DAQM's data conversion device is a commercial dual-input sigma-delta modulator IC, with appropriate external signal conditioning to facilitate voltage measurement via a resistor divider, and current measurement via a resistive shunt or current transformer (CT).  This paper will refer to the data conversion side of the DAQM as the ``secondary'' side.  The primary side of the DAQM consists of the coreless PCB transformer driver, clock encoding and data recovery circuitry.  To power the sigma-delta modulator (secondary side) and to provide it with a clock signal from the host, a single planar coreless PCB transformer is used.  This is teamed with a smaller, much higher frequency coreless PCB transformer in order to transfer data from the sigma-delta modulator back to the host.  For the selected sigma-delta converter, the clock frequency is approximately 8MHz, resulting in a data output rate of $ f_{clock}/4 $ (voltage and current share one Manchester-encoded data stream) with the maximum input sampling rate of $ f_{clock}/12 $.
-Whilst considerable work has been presented regarding the use of planar coreless PCB transformers in power transfer and isolated gate drive circuits, such papers do not discuss a high-frequency data and power transfer application \cite{TangHuiFundamental}\cite{NaturallySoft}\cite{OptimalOperation}\cite{CorelessGateDrive}.  The planar coreless PCB transformer, along with the methods used to transfer power, clock and data signals, will be the focus of this paper.
+The complete data acquisition system (figure \ref{fig:FullSystem}) comprises of several data acquisition modules (DAQMs), a data concentrator and filter FPGA, and a microcontroller attached to a PC, display and/or storage device.  
+The DAQM's data conversion device is a commercial dual-input sigma-delta modulator IC, with appropriate external signal conditioning to allow voltage measurement via a resistor divider, and current measurement via a shunt or current transformer (CT).  This paper will refer to the data conversion side of the DAQM as the ``secondary'' side.  The primary side of the DAQM consists of the coreless PCB transformer driver and data recovery circuitry.  Isolated secondary-side power and the modulator's external clock signal is provided by a single planar coreless PCB transformer.  This is teamed with a smaller,  higher frequency coreless PCB transformer used to transfer measurement data from the modulator back to the host.  For the selected sigma-delta modulator, the clock frequency will be approximately 8MHz, resulting in a data output rate of $ f_{clock}/4 $ (voltage and current share one Manchester-encoded data stream) with a maximum input sampling rate of $ f_{clock}/12 $.
+% MC REMOVED: (basically a repeat)
+%Whilst considerable work has been presented regarding the use of planar coreless PCB transformers in power transfer and isolated gate drive circuits, such papers do not discuss a high-frequency data and power transfer application \cite{TangHuiFundamental}\cite{NaturallySoft}\cite{OptimalOperation}\cite{CorelessGateDrive}.  The planar coreless PCB transformer, along with the methods used to transfer power, clock and data signals, will be the focus of this paper.
 
 \begin{figure}[t]
 	\centering
@@ -340,10 +341,10 @@ Whilst considerable work has been presented regarding the use of planar coreless
 
 \section{Planar coreless PCB transformers}
 
-The fundamental design of a planar coreless PCB transformer involves two planar copper spirals - one etched onto either side of a regular two or more layer PCB.  The two windings are thus separated by the PCB's core, whose material properties and thickness determine, to some extent, the transformer's performance and primary-to-secondary isolation.  This transformer's primary winding is then driven at high frequency, usually in the range of 2MHz to 20MHz in order to achieve either the maximum [input] impedance frequency (MIF - useful in low power systems) or the maximum efficiency frequency (MEF - useful for high power systems)\cite{TangHuiFundamental}\cite{NaturallySoft}\cite{OptimalOperation}\cite{CorelessGateDrive}.  \cite{TangHuiFundamental} has demonstrated that an external secondary load capacitor, in the order of 100pF to 1nF, plays a significant role in the determination of the transformer's resonant frequency.  In conventional coreless PCB transformer applications, the output (ie: secondary winding) voltage is then rectified and filtered.  Transformer efficiencies exceeding 90\%, with a power density of up to $ 24W/cm^{2} $ have been demonstrated \cite{TangHuiFundamental}.
+The fundamental design of a planar coreless PCB transformer involves two planar copper spirals - one etched onto either side of a regular two or more layer PCB.  The two windings are thus separated by the PCB's core, whose material properties and thickness determine, to some extent, the transformer's performance and isolation voltage.  The transformer's primary winding is then driven at high frequency, usually in the range of 2MHz to 20MHz in order to achieve either the maximum [input] impedance frequency (MIF - for low power systems) or the maximum efficiency frequency (MEF - for high power systems)\cite{TangHuiFundamental}\cite{NaturallySoft}\cite{OptimalOperation}\cite{CorelessGateDrive}.  \cite{TangHuiFundamental} has demonstrated that an external secondary load capacitor, in the order of 100pF to 1nF, plays a significant role in the determination of the transformer's resonant frequency.  In conventional coreless PCB transformer applications, the output voltage is then rectified and filtered, and efficiencies exceeding 90\%, with a power density of up to $ 24W/cm^{2} $ have been demonstrated \cite{TangHuiFundamental}.
 
-Planar coreless PCB transformers are very low cost and feature high power densities, no manufacturing restrictions due to core size or shape and are constructed using highly repeatable standard PCB manufacturing process. 
-
+%Planar coreless PCB transformers are very low cost and feature high power densities, no manufacturing restrictions due to core size or shape and are constructed using highly repeatable standard PCB manufacturing process. 
+%
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=1\columnwidth]{./img/HF_Model}
@@ -375,8 +376,8 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 \item[\hspace{-10pt}$ z $]        \hspace{-15pt} Separation distance between the circular tracks;
 \item[\hspace{-10pt}$ J_{0}(x) $] \hspace{-15pt} Bessel function of the first kind, order zero.
 \end{description}
-
-\hspace{-20pt} The self inductance of the planar winding \cite{HurleyDuffy} is given by
+%
+The self inductance of the planar winding \cite{HurleyDuffy} is given by
 % PRI
 \begin{equation}
 	L_{p} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{p}}{M_{ij}}}
@@ -386,15 +387,14 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 \begin{equation}
 	L_{s} = \sum\limits_{j=1}^{N_{s}}{\sum\limits_{i=1}^{N_{s}}{M_{ij}}}
 \end{equation}
-
-\hspace{-20pt} And thus, the mutual inductance between the two planar, multi-filament windings \cite{HurleyDuffy} may be represented as
+%
+And thus, the mutual inductance between the two planar, multi-filament windings \cite{HurleyDuffy} may be represented as
 %
 \begin{equation}
 	L_{M} = \sum\limits_{j=1}^{N_{p}}{\sum\limits_{i=1}^{N_{s}}{M_{ij}}}
 \end{equation}
-
-% MAHB: Removed autor names
-\hspace{-20pt} where the filament-to-filament mutual inductance, $ M_{ij} $, has been reported in \cite{HurleyDuffy}
+%
+where the filament-to-filament mutual inductance, $ M_{ij} $, has been reported in \cite{HurleyDuffy}
 % MAHB: Split equation over multiple lines
 \begin{equation}
 \begin{split}
@@ -402,8 +402,8 @@ A two-winding coreless PCB transformer may be described using the high-frequency
 	\\ &\quad {Q(kh_{1},kh_{2})e^{-k|z|}dk}
 \end{split}
 \end{equation}
-
-\hspace{-20pt} where
+%
+where
 \begin{equation}
 	S(kx, ky) = \frac{J_{0}(kx) - J_{0}(ky)}{k}
 \end{equation}
@@ -417,14 +417,14 @@ A two-winding coreless PCB transformer may be described using the high-frequency
    \right.
 \end{equation}
 
-\hspace{-20pt} Note that $z = 0$ for the calculation of self-inductances. 
+\hspace{-15pt}Note that $z = 0$ for the calculation of self-inductances. 
 To approximate the performance of the coreless PCB transformer, \cite{TangHuiFundamental} gives the resonant frequency as
-
+%
 \begin{equation}
 	f_{0} = \frac{1}{2\pi\sqrt{L_{eq}C_{eq}}};
 \end{equation}
-
-\hspace{-20pt} and the $s$-domain voltage gain (\ref{eqn:vGain}) and input impedance (\ref{eqn:zIn}) as
+%
+and the $s$-domain voltage gain (\ref{eqn:vGain}) and input impedance (\ref{eqn:zIn}) as
 %
 \begin{equation}
 	\label{eqn:vGain}
@@ -436,7 +436,7 @@ To approximate the performance of the coreless PCB transformer, \cite{TangHuiFun
 	Z_{in} = \frac{1}{sC_{12}'(1-nB)+\frac{1-A}{X_{1}}+sC_{1}'}.
 \end{equation}
 %
-Although it is not of great concern to the DAQM application (due to the low secondary power requirements), the efficiency of the coreless PCB transformer may be calculated as follows \cite{TangHuiFundamental}
+Although not of great concern to the DAQM application (due to the low secondary power requirements), the coreless PCB transformer's efficiency  may be calculated as \cite{TangHuiFundamental}
 % Power out
 \begin{equation}
 	P_{out} = \frac{|G(s)|^{2}\cdot|V_{p}|^{2}}{R_{L}};
@@ -445,14 +445,14 @@ Although it is not of great concern to the DAQM application (due to the low seco
 \begin{equation}
 	P_{in} = |V_{p}|^{2}\cdot\Re \left[ \frac{1}{Z_{in}} \right];
 \end{equation}
-and thus, \\
+and thus,
 % Efficiency
 \begin{equation}
 	\eta = \frac{|G(s)|^{2}}{R_{L}\cdot\Re \left[ \frac{1}{Z_{in}} \right]}\times 100 \%.
 \end{equation}
-
-\hspace{-20pt} Where \\
-
+%
+Where
+%
 \begin{align*}
 	L_{eq}   &= L_{LK2}'+L_{LK1}||L_{M} 	\\
 	C_{eq}   &= C_{2}'+C_{12}'				\\
@@ -468,7 +468,7 @@ and thus, \\
 	Y        &= -\frac{1}{X_{2}} + Y_{1}Y_{2}	\\
 	A        &= \frac{sC_{12}' + \frac{X_{2}}{X_{1}} Y_{2}}{Y}
 \end{align*}
-
+%
 \section{Implementation of power and signal isolation using PCB transformers}
 
 	\subsection{Power}
@@ -478,7 +478,7 @@ and thus, \\
 	
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=0.5\columnwidth]{./img/BIvsSE}
+		\includegraphics[width=0.9\columnwidth]{./img/BIvsSE}
 		\caption{Single-ended (a) and bipolar (b) transformer drive concept.}
 		\label{fig:BIvsSE}
 	\end{figure}
@@ -499,15 +499,15 @@ and thus, \\
 	The sigma-delta modulator encodes both voltage and current information into a single Manchester-encoded bitstream at a rate equal to $ f_{clock}/4 $ (typically 2MHz).  To transfer this data back to the primary side of the data acquisition module, a second coreless PCB transformer was used.  Since the data signal is not periodic in the way that a clock signal is, it was necessary to configure the data transformer for a very high resonant frequency, thus ensuring that only the high-frequency square wave transitions were sent over the coil.  To achieve this, the equations in section `Planar coreless PCB transformers' imply that either the number of primary and secondary turns (and thus the primary and secondary winding outer diameter) should be decreased, and/or the external load capacitor may be reduced or removed. \\
 	Figure \ref{fig:TFdat} shows the signal transformer and data recovery circuit.  On the coreless PCB transformer's secondary side, the data output of the modulator is capacitively coupled into the signal transformer, which is driven in a single-ended configuration.  On the primary side, the low-amplitude (50mV to 500mV may be expected) positive- and negative-going spikes, which represent the rising and falling edges of the data signal respectively, are first amplified by a bipolar junction transistor (BJT - Q1).  The amplifier's output is then coupled into two more BJTs with necessary biasing to allow the discrimination of the positive- and negative-going transitions (Q2 and Q3 respectively).  The output of each of the `edge transition detectors' is then fed into a set/reset latch constructed from a dual Schmitt-input NAND array to complete the decoding circuit.  As an added benefit, the outputs of the two NAND gates are complementary, thus allowing for differential signal driving back to the host FPGA (which may be located some distance away).
 %
-	\begin{figure*}[t]
+	\begin{figure}[t]
 		\centering
-		\includegraphics[width=0.7\textwidth]{./img/TFdat_BW}
+		\includegraphics[width=1\columnwidth]{./img/TFdat_BW}
 		\caption{Signal transformer and isolated data recovery circuit.}
 		\label{fig:TFdat}
-	\end{figure*}
+	\end{figure}
 %	
 \section{Experimental validation}
-To validate the use of planar coreless PCB transformers in the data acquisition module design, a test PCB transformer was manufactured on a standard two-layer, 1.6mm PCB (figure \ref{fig:DAQMphoto}).  The test transformer had 11 turns with identical primary and secondary windings, a track and spacing width equal to $ 254\mu $m (10 mil), a 100pF external load capacitor (C3 in figure \ref{fig:TFpwrclk}) and a 500$\Omega$ load resistor.  With an outer diameter of 14mm and inner diameter of 2.8mm, the transformer's calculated and measured inductive parameters (200kHz test frequency) were:
+To validate the use of planar coreless PCB transformers in the data acquisition module design, a test PCB transformer was manufactured on a standard two-layer, 1.6mm PCB.  The test transformer had 11 turns with identical primary and secondary windings, a track and spacing width equal to $ 254\mu $m (10 mil), a 100pF external load capacitor (C3 in figure \ref{fig:TFpwrclk}) and a 500$\Omega$ load resistor.  With an outer diameter of 14mm and inner diameter of 2.8mm, the transformer's calculated and measured inductive parameters (200kHz test frequency) were:
 
 % tablesgenerator.com
 \begin{table}[h]
@@ -531,12 +531,13 @@ Figure \ref{fig:NoRect} shows the test transformer's calculated and measured inp
 	\label{fig:NoRect}
 \end{figure}
 %
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.8\columnwidth]{./img/DAQMphoto}
-	\caption{Photograph of an initial unpopulated DAQM prototype with single 11-turn transformer.}
-	\label{fig:DAQMphoto}
-\end{figure}
+% Removed photograph to save space
+%\begin{figure}[t]
+%	\centering
+%	\includegraphics[width=0.8\columnwidth]{./img/DAQMphoto}
+%	\caption{Photograph of an initial unpopulated DAQM prototype with single 11-turn transformer.}
+%	\label{fig:DAQMphoto}
+%\end{figure}
 %
 	\subsection{Power}
 	%To approximate the expected load of the sigma-delta modulator and associated secondary circuitry, a $500\Omega $ load resistor was fitted after the rectifier.  By sweeping the primary drive frequency over the range of 500kHz to 25MHz, the coreless PCB test transformer, with primary-side Schmitt trigger driver and secondary side rectifier could be analysed for input impedance- and output voltage- versus frequency (FIGURE).  
@@ -545,7 +546,9 @@ Figure \ref{fig:NoRect} shows the test transformer's calculated and measured inp
 	The experimental data also demonstrates the effectiveness of driving the transformer in a bipolar manner, which has resulted in an output voltage approximately 1.6 times the 3.3V primary supply voltage - thus increasing the usable voltage range of the data acquisition module and simplifying the secondary voltage supply circuitry.  Additionally, the wide frequency range for which the output voltage is adequate for 3.3V regulation, may allow the transformer to be driven at a compromise frequency between the MIF and MEF in an effort to reduce primary drive current.
 	
 	Figure \ref{fig:VandPvsI} shows the coreless PCB test transformer's secondary rectified output power and voltage versus load current.  It shows a maximum power point of 47mW, and that for a minimum pre-regulator voltage of 3.5V, the load current may be up to 11mA (about 40mW) - twice the expected power required by the DAQM's secondary circuitry.  \\
-	As a compromise between the MIF (13MHz) and MEF (15.5MHz), the test transformer drive frequency was adjusted to 14MHz (figure \ref{fig:VanndPvsI_retuned}).  This data shows improved load regulation and a shift in the maximum power point toward greater load currents, as well as a slight reduction in maximum power (approximately 40mW max versus 47mW max).  This suggests that transformer operation at a MIF-MEF compromise frequency (rather than at the MEF exactly) can have benefits for applications with relatively substantial secondary loads where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used in the DAQM design).  The recommended experimental frequency setting procedure is to configure the secondary circuit for maximum expected load, then adjust the primary driver frequency for maximum secondary output voltage.
+	As a compromise between the MIF (13MHz) and MEF (15.5MHz), the test transformer drive frequency was adjusted to 14MHz (figure \ref{fig:VanndPvsI_retuned}).  This data shows improved load regulation and a shift in the maximum power point toward greater load currents, as well as a slight reduction in maximum power (approximately 40mW max versus 47mW max).  This suggests that transformer operation at a MIF-MEF compromise frequency (rather than at the MEF exactly) can have benefits for applications with relatively substantial secondary loads where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used in the DAQM design).
+	% MC REMOVED:
+	%The recommended experimental frequency setting procedure is to configure the secondary circuit for maximum expected load, then adjust the primary driver frequency for maximum secondary output voltage.
 
 	\begin{figure}[t]
 		\centering
