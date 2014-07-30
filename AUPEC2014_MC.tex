@@ -320,10 +320,9 @@ Industrial energy users are currently limited to expensive and low-bandwidth ene
 
 % MC Removed to save space
 %Conventionally, a galvanically isolated power supply is designed using a transformer with magnetic core to provide isolation.  Although a proven, reliable technology capable of high efficiency and high power transfer, the transformer can be an expensive and bulky component, especially in applications where the output power is very low.
-%\\
-%For isolated data transfer, opto-couplers are a popular solution for many low- to moderate-frequency systems, however devices capable of reliable operation at more than a few megaertz are expensive.  A relatively new method of signal isolation, the digital isolator, can operate at up to many tens of megahertz, however with a typical price of several dollars per two-channel unit (in 1ku quantities), their application in a low-cost device (such is the data acquisition module) is limited.
+For the isolation of digital data, opto-couplers are a popular solution for many low- to moderate-frequency systems, however devices capable of reliable operation at more than a few megaertz are expensive.  A relatively new method of signal isolation, the digital isolator, can operate at up to many tens of megahertz, however with a typical price of several Australian dollars per two-channel unit, their application in a low-cost device (such is the data acquisition module) is limited.  Similarly, isolation amplifiers may be used in applications where small analog signals require galvanic isolation, however their cost, like the digital isolators, is several dollars per unit.
 
-Considerable work has been published on the use of planar coreless PCB transformers in isolated gate drive circuits \cite{TangHuiFundamental,NaturallySoft,OptimalOperation,CorelessGateDrive}.  Although wireless charging systems for consumer electronics use a very similar concept, coreless PCB transformers have not seen significant use as a power and signal transfer device within commercial electronics.  Since a coreless PCB transformer's only cost is the PCB area it consumes, they are well suited for low-cost applications, and the use of standard PCB manufacturing processes makes their construction predictable and repeatable.
+Considerable work has been published on the use of planar coreless PCB transformers in isolated gate drive circuits \cite{TangHuiFundamental,NaturallySoft,OptimalOperation,CorelessGateDrive}.  Although consumer inductive charging systems use a similar concept, coreless PCB transformers have not seen significant use as a power and signal transfer device within commercial electronics.  Since a coreless PCB transformer's only cost is the PCB area it consumes, they are well suited for low-cost applications, and the use of standard PCB manufacturing processes makes their construction predictable and repeatable.
 
 This paper focuses primarily on the practical application of planar coreless PCB transformers as used for the DAQM's isolated power, clock and data signal transfer.  Calculations necessary to design the coreless PCB transformers are presented, and practical circuits designed for the DAQM application, but applicable to coreless PCB transformers in general, are included.  The experimental validation section demonstrates the viability of the use of coreless PCB transformers (and associated circuitry) in the DAQM application.
 
@@ -486,7 +485,7 @@ Where
 	
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=0.9\columnwidth]{./img/BIvsSE}
+		\includegraphics[width=1\columnwidth]{./img/BIvsSE}
 		\caption{Single-ended (a) and bipolar (b) transformer drive concept.}
 		\label{fig:BIvsSE}
 	\end{figure}
@@ -527,7 +526,7 @@ To validate the use of planar coreless PCB transformers in the data acquisition 
 % tablesgenerator.com
 \begin{table}[t]
 	\centering
-	\caption{Calculated an measured equivalent circuit parameters for the designed coreless PCB transformer.}
+	\caption{Calculated and measured equivalent circuit parameters for the designed coreless PCB transformer.}
 	\label{tab:transformerParameters}
 	\begin{tabular}{l|l|l|l|}
 	\cline{2-4}
@@ -542,10 +541,6 @@ To validate the use of planar coreless PCB transformers in the data acquisition 
 
 Figure \ref{fig:NoRect} shows the test transformer's calculated and measured input impedance and voltage gain versus frequency, where only the secondary-side load resistor of 500$\Omega$ is fitted (that is, no rectifier or clock decoder).  The plots show a MEF (9dB voltage gain) at 18MHz and a MIF (142$\Omega$ input impedance) at about 14.5MHz (measured values).  The calculated performance curves are shown to be a good representation of the actual device performance, especially with regard to the coreless PCB transformer's voltage gain.
 
-% Removed photograph to save space
-%MAHB: Include this - everyone wants to see photos of hardware
-%TODO: REFERENCE FIGURE INTEXT
-
 	\subsection{Power}
 	%To approximate the expected load of the sigma-delta modulator and associated secondary circuitry, a $500\Omega $ load resistor was fitted after the rectifier.  By sweeping the primary drive frequency over the range of 500kHz to 25MHz, the coreless PCB test transformer, with primary-side Schmitt trigger driver and secondary side rectifier could be analysed for input impedance- and output voltage- versus frequency (FIGURE).  
 	With the rectifier (no regulator; 500$\Omega$ load resistor) and clock extraction circuitry (figure \ref{fig:TFpwrclk}) fitted, figure \ref{fig:ZandVvsF} shows the coreless PCB transformer's primary RMS drive current and rectifier output voltage versus frequency (at 3.3V drive voltage).
@@ -554,40 +549,28 @@ Figure \ref{fig:NoRect} shows the test transformer's calculated and measured inp
 	
 	The experimental data also demonstrate the effectiveness of driving the transformer in a bipolar manner, which has resulted in an output voltage approximately 1.6 times the 3.3V primary supply voltage, thus increasing the usable voltage range of the data acquisition module and simplifying the secondary voltage supply circuitry.  Additionally, the wide frequency range for which the output voltage is adequate for 3.3V regulation, may allow the transformer to be driven at a compromise frequency between the MIF and MEF in an effort to reduce primary drive current.
 	
-	Figure \ref{fig:VandPvsI} shows the coreless PCB test transformer's secondary rectified output power and voltage versus load current.  It shows a maximum power point of 47mW, and that for a minimum pre-regulator voltage of 3.5V, the load current may be up to 11mA (about 40mW) -- twice the expected power required by the DAQM's secondary circuitry.
-	%TODO: REWORK FIRGURE REFERENCES, SEE BELOW
-	
-	As a compromise between the MIF (13MHz) and MEF (15.5MHz), the test transformer drive frequency was adjusted to 14MHz (figure \ref{fig:VandPvsI}).  This data shows improved load regulation and a shift in the maximum power point toward greater load currents, as well as a slight reduction in maximum power (approximately 40mW versus 47mW).  This suggests that transformer operation at a MIF-MEF compromise frequency (rather than at the MEF exactly) can have benefits for applications with relatively substantial secondary loads where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used in the DAQM design).
-	% MC REMOVED:
-	%The recommended experimental frequency setting procedure is to configure the secondary circuit for maximum expected load, then adjust the primary driver frequency for maximum secondary output voltage.
+	Figure \ref{fig:VandPvsI} shows the coreless PCB test transformer's secondary rectified output power and voltage versus load current, with a drive frequency of 15.5MHz (MEF) and 14MHz (MIF-MEF compromise).  It shows a maximum power point of 47mW when driving the transformer at its MEF, and that for a minimum pre-regulator voltage of 3.5V, the load current may be up to 11mA (about 40mW) -- twice the expected power required by the DAQM's secondary circuitry.  The data for the transformer at the MIF-MEF compromise (14MHz) shows improved load regulation and a shift in the maximum power point toward greater load currents, although the maximum power is reduced by 15\%.  This suggests that transformer operation at a MIF-MEF compromise frequency (rather than at the MEF exactly) can have benefits for applications where the primary is driven by a current-limited source (such as the Schmitt trigger direct-drive circuit used in the DAQM design).
 
 	\begin{figure}[t]
 		\centering
 		\includegraphics[width=1.0\columnwidth]{./img/NoRectTF}
-		\caption{Test transformer's input impedance and voltage gain versus drive frequency.}
+		\caption{Input impedance and voltage gain versus drive frequency, 500$\Omega$ load.}
 		\label{fig:NoRect}
 	\end{figure}
 
 	\begin{figure}[t]
 		\centering
 		\includegraphics[width=1\columnwidth]{./img/ZandVoutVsF_3V3}
-		\caption{Input impedance and output voltage versus frequency at 3.3V.}
+		\caption{Input impedance and output voltage vs frequency at 3.3V, 500$\Omega$ load.}
 		\label{fig:ZandVvsF}
 	\end{figure}
 	
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=1\columnwidth]{./img/VandPvsI}
-		\caption{Secondary output voltage and power versus load current at MEF (15.5MHz).}
+		\includegraphics[width=1\columnwidth]{./img/VandPvsIcombined}
+		\caption{Secondary output voltage and power versus load current at MEF (15.5MHz) and MIF-MEF compromise (14MHz).}
 		\label{fig:VandPvsI}
 	\end{figure}
-	%TODO: PUT THIS FIGURE ON TO SAME AXES AS PREVIOUS FIGURE
-	%\begin{figure}[t]
-	%	\centering
-	%	\includegraphics[width=1\columnwidth]{./img/VandPvsI_retuned}
-	%	\caption{Secondary output voltage and power versus load current at MIF-MEF compromise (14MHz).}
-	%	\label{fig:VanndPvsI_retuned}
-	%\end{figure}
 	
 	\subsection{Clock generation and recovery}
 	Since the sigma-delta modulator's clock is derived from the drive frequency of the primary winding, it is simplest for the primary drive frequency to be an exact power-of-two multiple of the desired modulator frequency, such that a series of D flip-flops may divide the signal down to the desired clock.  Since the test coreless PCB transformer has been designed for a 16MHz resonant frequency (with prior figures showing this to be a good operating point in practice), a single flip-flop was used to extract the 8MHz frequency.  Figure \ref{fig:Clock} shows the 16MHz clock signal (Reference, black), secondary output voltage (Ch. 1, blue) and extracted clock signal (Ch. 2, red).  
@@ -597,7 +580,7 @@ Figure \ref{fig:NoRect} shows the test transformer's calculated and measured inp
 	\begin{figure}[t]
 		\centering
 		\includegraphics[width=0.8\columnwidth]{./img/Clock}
-		\caption{16MHz input clock signal (Reference, black [top]); secondary output voltage (Ch. 1, blue [middle]); 8MHz extracted clock signal (Ch. 2, red [bottom]).}
+		\caption{16MHz input clock signal (Reference, black); secondary output voltage (Ch. 1, blue); 8MHz extracted clock signal (Ch. 2, red).}
 		\label{fig:Clock}
 	\end{figure}
 	
@@ -611,25 +594,12 @@ Figure \ref{fig:NoRect} shows the test transformer's calculated and measured inp
 	
 	Testing has demonstrated that the data recovery circuit is effective over a range of data rates and duty cycles, and that a coreless PCB transformer with as few as four to five turns can be expected to yield reliable performance at this data rate.
 	
-	%MC REMOVED: Due to hardware availability issues, the high-speed ($ t_{d} \leq 10ns $) Schmitt NAND gate specified in the circuit was substituted for an ordinary-speed ($ t_{d} \approx 250ns $) Schmitt NAND gate, which resulted in poor performance above about 500kHz (due to the fast impulses generated by the edge detection circuit).
-	% and:
-	%  CHANNEL NUMBER in figure \ref{fig:Data} shows the positive and negative edge spikes at the secondary of the five-turn coreless PCB transformer with a 3.3V, 2MHz simulated data signal applied (via a small capacitor).
-	%
-	% Need to re-test circuit using fast NAND gate on Wed 30th.
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=0.8\columnwidth]{./img/2M_Cropped}
-		\caption{UPDATE******Data into transformer (CH1, bottom); output of negative edge amplifier (CH2); output of positive edge amplifier (CH3); recovered data signal at output of transformer (CH4, top).}
+		\includegraphics[width=1\columnwidth]{./img/2M_Cropped}
+		\caption{Data into transformer (Reference 1, light blue); output of 5-turn transformer (Ch. 1, blue); output of negative edge amplifier (Ch. 2, magenta); output of positive edge amplifier (Ch. 3, yellow); recovered data signal (Ch. 4, green).}
 		\label{fig:Data}
 	\end{figure}
-
-% What this figure shows will soon be presented in figure:Data (above) when it is re-tested
-%	\begin{figure}[t]
-%		\centering
-%		\includegraphics[width=0.8\columnwidth]{./img/5turnTF}
-%		\caption{Positive and negative edge spikes at secondary of 5-turn transformer (3.3V primary signal).}
-%		\label{fig:5turnTF}
-%	\end{figure}
 
 \section{Future work}
 % Unsure of my terminology regarding axially and planarly separated.  Meaning:
